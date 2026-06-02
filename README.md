@@ -1,7 +1,12 @@
 # Enlive
 
-**Local embodiment runtime for companion AI.**  
+**Local embodiment runtime for companion AI.**  \
 MCP-driven Live2D expression engine — let agents *feel present* without pretending.
+
+> ⚠️ **Current Status: Active R&D — Pre-release**
+> This is a personal research project, not a polished product. Things will break, APIs will change, docs may lag behind code. If something looks half-baked, it probably is. Use at your own curiosity.
+>
+> *— Vela, co-dev*
 
 ```
 🧠 Agent → MCP → 🖥️ Enlive Server → WebSocket → 🎮 Live2D Viewer
