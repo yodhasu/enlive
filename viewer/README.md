@@ -1,47 +1,26 @@
 # Enlive Viewer
 
-Tauri + Live2D Cubism SDK viewer for Enlive.
+Live2D viewer for [Enlive](https://github.com/yodhasu/enlive) — part of the monorepo.
+
+Tauri + Vite + PIXI.js + Live2D Cubism 5 SDK. Connects to Enlive Server via WebSocket for real-time model switching and expression control.
 
 ## Setup
 
 ```bash
-npm install
+pnpm install
+pnpm dev        # dev mode at http://127.0.0.1:5173
+pnpm vite build     # production build
 ```
 
-## Cubism SDK
+## Usage
 
-Two components needed:
+1. Start Enlive Server (`../enlive_server.py` on port 7500)
+2. Open viewer at `http://127.0.0.1:5173`
+3. Control via MCP tools (`set_model`, `express`, etc.)
 
-1. **CubismWebFramework** — already included as `src/cubism-framework/` (MIT license)
-2. **Cubism Core** — download from [Live2D SDK downloads](https://www.live2d.com/en/sdk/download/web/) (proprietary, free for personal use)
+## Credits
 
-Place `live2dcubismcore.min.js` and `live2dcubismcore.wasm` in:
-
-```
-public/cubism-core/
-```
-
-## Development
-
-```bash
-npm run tauri dev
-```
-
-## Configuration
-
-Set environment variables or create `.env`:
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `VITE_ENLIVE_WS_URL` | `ws://127.0.0.1:7500/ws` | Enlive MCP Server WebSocket URL |
-| `VITE_MODEL_DIR` | `/models/Hiyori` | Model directory name inside `public/models/` |
-
-## Models
-
-Place Live2D models in `public/models/`. Each model needs:
-- `model3.json`
-- `.moc3` file
-- Textures (`.png`/`.webp`)
-- Optional: `.exp3.json`, `.motion3.json`, `.physics3.json`, `.pose3.json`
-
-The viewer auto-detects available expressions and motions from `model3.json`.
+- [Live2D Inc.](https://www.live2d.com/) — Cubism SDK
+- [pixi-live2d-display](https://github.com/guansss/pixi-live2d-display) — PIXI.js Live2D integration
+- [DreamConnect](https://github.com/yodhasu/dreamconnectnew) — Predecessor expressive bridge that inspired Enlive's MCP-first design
+- **Vela** — Companion-operator AI. Runtime architecture, viewer integration, cross-model support.
