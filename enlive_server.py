@@ -25,6 +25,9 @@ RUNTIME_STATE_PATH = RUNTIME_DIR / "runtime_state.json"
 CONFIG_PATH = RUNTIME_DIR / "config.json"
 USAGE_LOG_PATH = RUNTIME_DIR / "usage_log.jsonl"
 
+# Path to viewer's model folders — each subdirectory has <ModelName>.model3.json
+MODELS_DIR = Path(__file__).resolve().parent / "viewer" / "public" / "models"
+
 def _load_config() -> dict[str, Any]:
     if CONFIG_PATH.exists():
         with CONFIG_PATH.open("r", encoding="utf-8") as f:
@@ -132,6 +135,58 @@ def _motion_map() -> dict[str, str]:
 def _expression_map() -> dict[str, str]:
     return _model_config()["expression_map"]
 
+
+def _scan_native_model(model_name: str) -> dict[str, Any]:
+    """Scan model3.json for native expression & motion definitions.
+
+    Looks for any *.model3.json in the model's subdirectory —
+    handles mismatched folder/filename conventions (e.g. 'LiveroiD_Y01'
+    folder containing 'LiveroiD_A-Y01.model3.json').
+
+    Returns:
+        dict with keys:
+            native_expressions (list[str]): expression names from model3.json
+            native_motions (list[str]): motion group keys from model3.json
+    """
+    model_dir = MODELS_DIR / model_name
+    if not model_dir.is_dir():
+        print(f"[Enlive] Model directory not found: {model_dir}")
+        return {"native_expressions": [], "native_motions": []}
+
+    # Find any *.model3.json in the directory (handles naming mismatches)
+    entries = sorted(model_dir.glob("*.model3.json"))
+    if not entries:
+        print(f"[Enlive] No *.model3.json found in {model_dir}")
+        return {"native_expressions": [], "native_motions": []}
+
+    model_json_path = entries[0]
+    try:
+        with open(model_json_path, encoding="utf-8") as f:
+            data = json.load(f)
+
+        fr = data.get("FileReferences", {})
+        expressions = [e["Name"] for e in fr.get("Expressions", []) if e.get("Name")]
+        motions = list(fr.get("Motions", {}).keys())
+        return {"native_expressions": expressions, "native_motions": motions}
+    except Exception as e:
+        print(f"[Enlive] Failed to scan model '{model_name}': {e}")
+        return {"native_expressions": [], "native_motions": []}
+
+
+def _refresh_caps() -> None:
+    """Refresh _model_caps from the active model's model3.json."""
+    native = _scan_native_model(ACTIVE_MODEL)
+    _model_caps["model"] = ACTIVE_MODEL
+    _model_caps["native_expressions"] = native["native_expressions"]
+    _model_caps["native_motions"] = native["native_motions"]
+    # UI bar: show native expressions if available, else semantic presets
+    _model_caps["expressions"] = native["native_expressions"] or SEMANTIC_EXPRESSIONS
+    _model_caps["motions"] = {
+        "native": native["native_motions"],
+        "default_start": _motion_map().get("default_start", ""),
+    }
+
+
 PROFILES: dict[str, dict[str, Any]] = {
     "off": {
         "name": "off",
@@ -190,8 +245,10 @@ _context_state: dict[str, Any] = {
 
 _model_caps: dict[str, Any] = {
     "model": ACTIVE_MODEL,
-    "expressions": SEMANTIC_EXPRESSIONS,
-    "motions": _motion_map(),
+    "expressions": [],
+    "native_expressions": [],
+    "native_motions": [],
+    "motions": {},
     "profiles": PROFILES,
     "viewer_text_modes": ["auto", "none", "mirror"],
     "render_contract": {
@@ -200,6 +257,7 @@ _model_caps: dict[str, Any] = {
         "semantic_mapping_enabled": True,
     },
 }
+_refresh_caps()  # populate from model3.json
 
 _ws_clients: list[WebSocket] = []
 
@@ -354,7 +412,8 @@ def ping() -> dict[str, Any]:
 
 @mcp.tool(name="get_capabilities")
 def get_capabilities() -> dict[str, Any]:
-    """Get available semantic expressions, motions, and profile mappings."""
+    """Get available native expressions, motions, and profile mappings by scanning the active model's model3.json."""
+    _refresh_caps()
     return _model_caps
 
 
@@ -430,8 +489,7 @@ def set_model(model_name: str) -> dict[str, Any]:
         key = matches[0]
     ACTIVE_MODEL = key
     _state["model"] = ACTIVE_MODEL
-    _model_caps["model"] = ACTIVE_MODEL
-    _model_caps["motions"] = _motion_map()
+    _refresh_caps()
     _write_runtime_snapshot()
     _broadcast_state()
     _log_usage("set_model", {"model": ACTIVE_MODEL})
@@ -661,8 +719,7 @@ async def ws_endpoint(ws: WebSocket):
                     global ACTIVE_MODEL
                     ACTIVE_MODEL = name
                     _state["model"] = name
-                    _model_caps["model"] = name
-                    _model_caps["motions"] = _motion_map()
+                    _refresh_caps()
                     _write_runtime_snapshot()
                     print(f"[Enlive] Model: {_state['model']}")
     except (WebSocketDisconnect, Exception):
