@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+*.egg
+.venv/
+venv/
+
+# Node
+node_modules/
+dist/assets/
+dist/index.html
+dist/cubism-core/
+dist/cubism-framework/
+dist/shaders/
+dist/models/
+pnpm-lock.yaml
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Runtime
+*.log
+.env
+
+# Old experimental versions
+enlive_server_v2.py
