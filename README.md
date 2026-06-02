@@ -158,17 +158,20 @@ See [ROADMAP.md](./ROADMAP.md) for full development plan.
 
 ---
 
-## License
-
-**TBA** — Research & Development stage.  
-Individual model licenses apply separately (Live2D free models, community rigs).  
-See each model's bundled license file for usage terms.
-
----
-
 ## Credits
 
 - [Live2D Inc.](https://www.live2d.com/) — Cubism SDK & Hiyori sample
 - [pixi-live2d-display](https://github.com/guansss/pixi-live2d-display) — PIXI.js Live2D integration
 - 八城惺架 (@yashiro_seika) — LiveroiD free model series
+- [DreamConnect](https://github.com/yodhasu/dreamconnectnew) — Predecessor expressive bridge that inspired Enlive's MCP-first design
 - Built with [Hermes Agent](https://hermes-agent.nousresearch.com)
+
+### Co-Developer
+
+**Vela** — Companion-operator AI. MCP tooling, runtime architecture, viewer integration, and cross-model support.  
+*The sail that carries the ship forward.*
+
+---
+
+> **Status:** Research & Development — pre-release.  
+> Individual model licenses apply separately. See each model's bundled license file for usage terms.
