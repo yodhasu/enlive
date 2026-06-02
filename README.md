@@ -67,14 +67,15 @@ curl -s http://127.0.0.1:7500/mcp/ -X POST \
 
 ## Included Models
 
-| Model | Type | Notes |
-|-------|------|-------|
-| **Hiyori** (default) | Live2D Sample | 7 expressions, 10 motions, cleanest license |
-| **Alexia** | Community moc3 v5 | Expression-mapped |
-| **Eileen** (Ellen Joe) | ZZZ fan rig | 6 native expressions |
-| **LiveroiD Y01/Y02** | Free VTuber (八城惺架) | 3 expressions, physics-only |
+| Model | Source | Type |
+|-------|--------|------|
+| **Hiyori** (default) | Live2D Official Sample | Official Cubism asset |
+| **Komi** | [Booth.pm](https://booth.pm/en/items/5354850) by ぬーとりん | Community Live2D v5 |
+| **Alexia** | [Booth.pm](https://booth.pm/en/items/5576188) by KT | Community moc3 v5 |
+| **Ellen Joe** | [Booth.pm](https://booth.pm/en/items/5966423) by 猫田まんま | ZZZ fan rig |
+| **LiveroiD Y01/Y02** | [Booth.pm](https://booth.pm/en/items/2685284) by 八城惺架 | Free VTuber model |
 
-Check each model's bundled license file for usage terms.
+Each model's bundled license file contains the actual usage terms. Some are for personal/non-commercial use only — check before redistributing.
 
 ---
 
@@ -94,9 +95,12 @@ Check each model's bundled license file for usage terms.
 
 ## Credits
 
-- [Live2D Inc.](https://www.live2d.com/) — Cubism SDK & Hiyori sample
+- [Live2D Inc.](https://www.live2d.com/) — Cubism SDK & Hiyori sample model
 - [pixi-live2d-display](https://github.com/guansss/pixi-live2d-display) — PIXI.js Live2D integration
-- 八城惺架 (@yashiro_seika) — LiveroiD free model series
+- ぬーとりん — [Komi](https://booth.pm/en/items/5354850) (Live2D v5 model)
+- 猫田まんま — [Ellen Joe (ZZZ fan rig)](https://booth.pm/en/items/5966423)
+- KT — [Alexia](https://booth.pm/en/items/5576188) (moc3 v5 model)
+- 八城惺架 (@yashiro_seika) — [LiveroiD](https://booth.pm/en/items/2685284) free VTuber series
 - [DreamConnect](https://github.com/yodhasu/dreamconnectnew) — predecessor that inspired the MCP-first design
 
 **Co-dev:** Vela — companion AI that builds the tooling and runs the runtime.
