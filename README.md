@@ -56,76 +56,141 @@ Enlive gives them a **body** — a Live2D model that reacts, expresses, and move
 
 | Component | Location | Tech | Port |
 |-----------|----------|------|------|
-| **Enlive Server** | `~/projects/enlive/` | Python + FastAPI + FastMCP | `7500` |
-| **Enlive Viewer** | `~/projects/enlive-viewer/` | Vite + TypeScript + PIXI.js | `5173` |
+| **Enlive Server** | `enlive_server.py` (root) | Python + FastAPI + FastMCP | `7500` |
+| **Enlive Viewer** | `viewer/` | Vite + TypeScript + PIXI.js | `5173` |
 
 ---
 
 ## Quick Start
 
-### Prerequisites
-
-- Python 3.11+ with `fastmcp`, `fastapi`, `uvicorn`
-- Node.js + pnpm
-- Live2D model files (moc3 + textures) in `viewer/public/models/`
-
-### 1. Start the Server
-
 ```bash
-cd ~/projects/enlive
+# 1. Clone
+git clone https://github.com/yodhasu/enlive.git
+cd enlive
+
+# 2. Server (terminal 1)
+pip install fastmcp fastapi uvicorn
 python enlive_server.py
-```
 
-Server starts on `http://0.0.0.0:7500` with MCP at `/mcp/`.
-
-### 2. Start the Viewer
-
-```bash
-cd ~/projects/enlive-viewer
+# 3. Viewer (terminal 2)
+cd viewer
 pnpm install
-pnpm dev          # dev mode with hot reload
-# or
-pnpm vite build && pnpm vite preview  # production preview
+pnpm dev
 ```
 
-Viewer available at `http://127.0.0.1:5173`.
+- Server → `http://0.0.0.0:7500` (MCP at `/mcp/`)
+- Viewer → `http://127.0.0.1:5173`
 
-### 3. Control via MCP
+> ⚠️ **Important:** Open the viewer page **first** before sending expressions. The viewer needs to connect its WebSocket and register before it can receive display commands.
+
+### Control via MCP
+
+From any MCP-compatible agent:
+
+```python
+# List available models
+mcp_enlive_list_models()
+
+# Switch model at runtime (viewer auto-updates, no refresh needed)
+mcp_enlive_set_model(model_name="Hiyori")
+
+# Set expression
+mcp_enlive_express(expression="happy")
+
+# Enable companion mode (context-aware expression behavior)
+mcp_enlive_set_companion_mode(enabled=True)
+```
+
+Or via curl:
 
 ```bash
-# List all models
 curl -s http://127.0.0.1:7500/mcp/ -X POST \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"list_models","arguments":{}}}'
 ```
 
-From Hermes Agent, use native MCP tools:
-
-```
-mcp_enlive_list_models()
-mcp_enlive_set_model(model_name="Hiyori")
-mcp_enlive_express(expression="happy")
-mcp_enlive_set_companion_mode(enabled=true)
-```
-
 ---
 
-## MCP Tools
+## Agentic AI Setup Guide
 
-| Tool | Description |
-|------|-------------|
-| `list_models` | List all available models + active + default |
-| `set_model` | Switch active model (viewer auto-updates) |
-| `set_default_model` | Persist default model for next startup |
-| `get_active_model` | Current model name + full config |
-| `get_capabilities` | Available expressions, motions, profiles |
-| `express` | Set expression + animation for viewer |
-| `ping` | Health check |
-| `set_companion_mode` | Toggle companion bias (off/subtle/companion) |
-| `recommend_expression` | Get context-aware expression recommendation |
+> This section is written for AI agents that clone this repo. Follow these steps exactly.
 
----
+You are an AI agent setting up Enlive for your user. Do these in order:
+
+### 1. Check Dependencies
+
+```bash
+python3 --version  # need 3.11+
+node --version     # need 18+
+pnpm --version     # if missing: npm install -g pnpm
+```
+
+### 2. Install Python Dependencies
+
+```bash
+pip install fastmcp fastapi uvicorn
+```
+
+### 3. Install Viewer Dependencies
+
+```bash
+cd viewer
+pnpm install
+```
+
+### 4. Verify Model Files Exist
+
+```bash
+ls viewer/public/models/
+# Should see at least: Hiyori/, Alexia/, Eileen/, LiveroiD_Y01/, LiveroiD_Y02/
+```
+
+### 5. Start Server (background)
+
+```bash
+cd /path/to/enlive
+python enlive_server.py &
+# Wait for: "Enlive server started on port 7500"
+```
+
+### 6. Verify Server is Up
+
+```bash
+curl -s http://127.0.0.1:7500/mcp/ -X POST \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"ping","params":{}}'
+# Should return {"result": "pong"}
+```
+
+### 7. Start Viewer (background)
+
+```bash
+cd viewer
+pnpm dev &
+# Wait for dev server ready (port 5173)
+```
+
+### 8. Tell User
+
+Enlive is running:
+- Viewer: http://127.0.0.1:5173
+- Server MCP: ws://127.0.0.1:7500/ws
+
+### Systemd Setup (Linux — optional for persistent deployment)
+
+```bash
+# Enable services
+sudo systemctl enable enlive-server enlive-viewer
+
+# Start
+sudo systemctl restart enlive-server
+sudo systemctl restart enlive-viewer
+
+# Logs
+sudo journalctl -u enlive-server -f
+```
 
 ## Included Models
 
@@ -137,23 +202,6 @@ mcp_enlive_set_companion_mode(enabled=true)
 | **LiveroiD Y01/Y02** | Free VTuber model (八城惺架) | 3 native | physics only | Free (see readme.txt) |
 
 > Default model: **Hiyori** — the official Live2D sample with the clearest licensing.
-
----
-
-## Systemd Services (Linux)
-
-```bash
-# Enable services
-sudo systemctl enable enlive-server enlive-viewer
-
-# Start / Stop / Restart
-sudo systemctl restart enlive-server
-sudo systemctl restart enlive-viewer
-
-# View logs
-sudo journalctl -u enlive-server -f
-sudo journalctl -u enlive-viewer -f
-```
 
 ---
 

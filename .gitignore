@@ -7,19 +7,11 @@ dist/
 .venv/
 venv/
 
-# Node
-node_modules/
-dist/assets/
-dist/index.html
-dist/cubism-core/
-dist/cubism-framework/
-dist/shaders/
-dist/models/
-pnpm-lock.yaml
+# Viewer — Node
+viewer/node_modules/
 
-# IDE
-.vscode/
-.idea/
+# Viewer — build output (keep source, ignore built assets)
+viewer/dist/
 
 # OS
 .DS_Store
