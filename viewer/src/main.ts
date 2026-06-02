@@ -128,6 +128,12 @@ const MODEL_CONFIGS: Record<string, ModelConfig> = {
     baseScale: 0.45,
     expressionMap: {
       neutral: '',
+      slightly_curious: 'eye_shine',
+      chill: '',
+      interested: 'eye_size',
+      happy: 'blush',
+      angry: 'pout',
+      sleepy: 'mouth',
     },
     motionPresets: {
       neutral: { group: 'Idle', index: 0 },
