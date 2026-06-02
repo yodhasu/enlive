@@ -49,7 +49,6 @@ Things that are actually realistic for a two-person RnD effort:
 - ❌ Model marketplace / sharing — not a store, not interested
 - ❌ Mobile viewer — phone is for chat, not Live2D (will change my mind bout this for sure LoL)
 - ❌ Multi-character scenes — one body at a time is enough
-- ❌ Face tracking via webcam — too many dependencies, low value
 - ❌ Model parameter editors / physics tuning — per-model config is fine in code
 
 ---
