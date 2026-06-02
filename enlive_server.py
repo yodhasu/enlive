@@ -105,6 +105,14 @@ MODEL_CONFIGS: dict[str, dict[str, Any]] = {
             "neutral": "",
         },
     },
+    "Komi": {
+        "motion_map": {
+            "default_start": "neutral",
+        },
+        "expression_map": {
+            "neutral": "",
+        },
+    },
 }
 
 # ── Active model selection ──────────────────────────

@@ -122,6 +122,21 @@ const MODEL_CONFIGS: Record<string, ModelConfig> = {
     defaultStart: 'neutral',
     skipFromUi: [],
   },
+  Komi: {
+    name: 'Komi',
+    modelJson: '/models/Komi/Komi.model3.json',
+    baseScale: 0.45,
+    expressionMap: {
+      neutral: '',
+    },
+    motionPresets: {
+      neutral: { group: 'Idle', index: 0 },
+    },
+    motionInfo: 'Curious · Excited · Happy · Komi · Menacing · Panting · Shy',
+    expressionInfo: 'aura · blush · cat_ear · eye_shine · eye_size · mouth · nose · pout',
+    defaultStart: 'neutral',
+    skipFromUi: [],
+  },
   Eileen: {
     name: 'Eileen',
     modelJson: '/models/Eileen/Eileen.model3.json',
